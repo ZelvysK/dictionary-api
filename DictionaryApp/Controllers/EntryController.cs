@@ -9,14 +9,13 @@ namespace DictionaryApp.Controllers;
 public class EntryController(IEntryService entryService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<EntryDto[]>> GetAll() {
+    public async Task<ActionResult<EntryDto[]>> GetAllEntries() {
         var entries = await entryService.GetAllEntriesAsync();
 
         return Ok(entries);
     }
-
-    [HttpGet("id")]
-    public async Task<ActionResult<EntryDto[]>> GetById(Guid id) {
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EntryDto[]>> GetEntryById(Guid id) {
         var entry = await entryService.GetEntryByIdAsync(id);
 
         if (entry is null)
