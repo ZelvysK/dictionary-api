@@ -8,8 +8,9 @@ public class Book
     public string Title { get; set; }
     public string Description { get; set; }
     public Author Author { get; set; }
+    public Guid AuthorId { get; set; }
     public DateTime DateWritten { get; set; }
-    public Image CoverImage { get; set; }
+    public string CoverImageUrl { get; set; }
 
     public BookDto ToDto() => new()
     {
@@ -17,7 +18,8 @@ public class Book
         Title = Title,
         Description = Description,
         Author = Author.ToDto(),
+        AuthorId = AuthorId,
         DateWritten = DateWritten,
-        CoverImage = CoverImage.ToDto()
+        CoverImageUrl = CoverImageUrl
     };
 }

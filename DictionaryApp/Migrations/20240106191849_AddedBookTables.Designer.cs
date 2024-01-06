@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DictionaryApp.Migrations
 {
     [DbContext(typeof(DictionaryContext))]
-    [Migration("20240105201153_AddedBookTables")]
+    [Migration("20240106191849_AddedBookTables")]
     partial class AddedBookTables
     {
         /// <inheritdoc />
@@ -39,12 +39,11 @@ namespace DictionaryApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("PhotoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
 
                     b.ToTable("Authors");
                 });
@@ -58,8 +57,9 @@ namespace DictionaryApp.Migrations
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CoverImageId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoverImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateWritten")
                         .HasColumnType("datetime2");
@@ -75,8 +75,6 @@ namespace DictionaryApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("CoverImageId");
 
                     b.ToTable("Books");
                 });
@@ -100,32 +98,6 @@ namespace DictionaryApp.Migrations
                     b.ToTable("Entries");
                 });
 
-            modelBuilder.Entity("DictionaryApp.Models.Image", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("DictionaryApp.Models.Author", b =>
-                {
-                    b.HasOne("DictionaryApp.Models.Image", "Photo")
-                        .WithMany()
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Photo");
-                });
-
             modelBuilder.Entity("DictionaryApp.Models.Book", b =>
                 {
                     b.HasOne("DictionaryApp.Models.Author", "Author")
@@ -134,15 +106,7 @@ namespace DictionaryApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DictionaryApp.Models.Image", "CoverImage")
-                        .WithMany()
-                        .HasForeignKey("CoverImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Author");
-
-                    b.Navigation("CoverImage");
                 });
 #pragma warning restore 612, 618
         }
