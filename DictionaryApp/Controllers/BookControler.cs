@@ -44,11 +44,11 @@ public class BookControler(IEntryService entryService, IBookService bookService)
 
         return Ok(entry);
     }
-    [HttpGet("Books/{author}")]
-    public async Task<ActionResult<BookDto[]>> GetBookByAuthor(Author author) {
-        var entry = await bookService.GetBookByAuthorAsync(author);
+    [HttpGet("Books/Author{authorId}")]
+    public async Task<ActionResult<IEnumerable<BookDto>>> GetBookByAuthor(Guid authorId) {
+        var entry = await bookService.GetBookByAuthorAsync(authorId);
 
-        if (entry is null)
+        if (entry is null || !entry.Any())
         {
             return NotFound();
         }

@@ -52,6 +52,4 @@ public class EntryService(DictionaryContext context, ILogger<EntryService> logge
 
         return result;
     }
-
-
 }

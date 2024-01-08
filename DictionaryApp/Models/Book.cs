@@ -1,4 +1,6 @@
-﻿using DictionaryApp.Dtos;
+﻿using DictionaryApp.Controllers;
+using DictionaryApp.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryApp.Models;
 
@@ -12,13 +14,13 @@ public class Book
     public DateTime DateWritten { get; set; }
     public string CoverImageUrl { get; set; }
 
-    public BookDto ToDto() => new()
+    public BookDto ToDto(DictionaryContext context) => new()
     {
         Id = Id,
         Title = Title,
         Description = Description,
-        Author = Author.ToDto(),
         AuthorId = AuthorId,
+        Author = context.Authors.Where(a => a.Id == AuthorId).Select(a => a.ToDto()).FirstOrDefault(),
         DateWritten = DateWritten,
         CoverImageUrl = CoverImageUrl
     };

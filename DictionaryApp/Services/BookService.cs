@@ -7,7 +7,7 @@ namespace DictionaryApp.Services;
 public interface IBookService
 {
     Task<BookDto[]> GetAllBooksAsync();
-    Task<BookDto?> GetBookByAuthorAsync(Author author);
+    Task<IEnumerable<BookDto>> GetBookByAuthorAsync(Guid author);
     Task<BookDto?> GetBookByIdAsync(Guid id);
 }
 
@@ -18,7 +18,7 @@ public class BookService(DictionaryContext context, ILogger<BookService> logger)
 
         var entries = await context.Books.AsNoTracking().ToArrayAsync();
 
-        var result = entries.Select(e => e.ToDto()).ToArray();
+        var result = entries.Select(e => e.ToDto(context)).ToArray();
 
         return result;
     }
@@ -27,16 +27,16 @@ public class BookService(DictionaryContext context, ILogger<BookService> logger)
 
         var entry = await context.Books.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 
-        var result = entry?.ToDto();
+        var result = entry?.ToDto(context);
 
         return result;
     }
-    public async Task<BookDto?> GetBookByAuthorAsync(Author author) {
-        logger.LogInformation("Get entry by author: {author}", author);
+    public async Task<IEnumerable<BookDto>> GetBookByAuthorAsync(Guid authorId) {
+        logger.LogInformation("Get entry by author: {authorId}", authorId);
 
-        var entry = await context.Books.AsNoTracking().FirstOrDefaultAsync(b => b.Author == author);
+        var entry = await context.Books.AsNoTracking().Where(a => a.AuthorId == authorId).ToListAsync();
 
-        var result = entry?.ToDto();
+        var result = entry?.Select(b => b.ToDto(context));
 
         return result;
     }
