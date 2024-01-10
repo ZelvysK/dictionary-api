@@ -1,5 +1,4 @@
 ﻿using DictionaryApp.Dtos;
-using DictionaryApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryApp.Services;
@@ -7,8 +6,8 @@ namespace DictionaryApp.Services;
 public interface IBookService
 {
     Task<BookDto[]> GetAllBooksAsync();
-    Task<BookDto?> GetBookByAuthorAsync(Author author);
-    Task<BookDto?> GetBookByIdAsync(Guid id);
+    Task<BookDto[]> GetBooksByAuthorAsync(Guid author);
+    Task<BookDto?> GetBookWithAuthorByIdAsync(Guid id);
 }
 
 public class BookService(DictionaryContext context, ILogger<BookService> logger) : IBookService
@@ -16,27 +15,37 @@ public class BookService(DictionaryContext context, ILogger<BookService> logger)
     public async Task<BookDto[]> GetAllBooksAsync() {
         logger.LogInformation("Get all entries");
 
-        var entries = await context.Books.AsNoTracking().ToArrayAsync();
+        var entries = await context.Books
+            .AsNoTracking()
+            .ToArrayAsync();
 
         var result = entries.Select(e => e.ToDto()).ToArray();
 
         return result;
     }
-    public async Task<BookDto?> GetBookByIdAsync(Guid id) {
+
+    public async Task<BookDto?> GetBookWithAuthorByIdAsync(Guid id) {
         logger.LogInformation("Get entry by id: {id}", id);
 
-        var entry = await context.Books.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+        var entry = await context.Books
+            .AsNoTracking()
+            .Include(a => a.Author)
+            .FirstOrDefaultAsync(e => e.Id == id);
 
         var result = entry?.ToDto();
 
         return result;
     }
-    public async Task<BookDto?> GetBookByAuthorAsync(Author author) {
-        logger.LogInformation("Get entry by author: {author}", author);
 
-        var entry = await context.Books.AsNoTracking().FirstOrDefaultAsync(b => b.Author == author);
+    public async Task<BookDto[]> GetBooksByAuthorAsync(Guid authorId) {
+        logger.LogInformation("Get entry by author: {authorId}", authorId);
 
-        var result = entry?.ToDto();
+        var entries = await context.Books
+            .AsNoTracking()
+            .Where(a => a.AuthorId == authorId)
+            .ToArrayAsync();
+
+        var result = entries.Select(b => b.ToDto()).ToArray();
 
         return result;
     }

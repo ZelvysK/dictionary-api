@@ -1,6 +1,4 @@
-﻿using DictionaryApp.Models;
-
-namespace DictionaryApp.Dtos;
+﻿namespace DictionaryApp.Dtos;
 
 public class AuthorDto
 {

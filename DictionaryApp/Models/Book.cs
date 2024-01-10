@@ -7,7 +7,7 @@ public class Book
     public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public Author Author { get; set; }
+    public Author? Author { get; set; }
     public Guid AuthorId { get; set; }
     public DateTime DateWritten { get; set; }
     public string CoverImageUrl { get; set; }
@@ -17,8 +17,8 @@ public class Book
         Id = Id,
         Title = Title,
         Description = Description,
-        Author = Author.ToDto(),
         AuthorId = AuthorId,
+        Author = Author?.ToDto(),
         DateWritten = DateWritten,
         CoverImageUrl = CoverImageUrl
     };
