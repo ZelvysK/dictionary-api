@@ -14,6 +14,7 @@ public class EntryController(IEntryService entryService) : ControllerBase
 
         return Ok(entries);
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<EntryDto[]>> GetEntryById(Guid id) {
         var entry = await entryService.GetEntryByIdAsync(id);
